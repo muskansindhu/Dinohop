@@ -6,14 +6,39 @@ kaboom({
 
 loadSprite("bean", "sprites/bean.png")
 
+let currentIntensity = 0;
+
+navigator.mediaDevices.getUserMedia({ audio: true })
+  .then(function(stream) {
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const analyser = audioContext.createAnalyser();
+    const source = audioContext.createMediaStreamSource(stream);
+    source.connect(analyser);
+    analyser.fftSize = 256;
+    const dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+    function getAudioIntensity() {
+      analyser.getByteFrequencyData(dataArray);
+      let sum = 0;
+      for (let i = 0; i < dataArray.length; i++) {
+        sum += dataArray[i];
+      }
+      const average = sum / dataArray.length;
+      currentIntensity = Math.round((average / 255) * 100);
+      requestAnimationFrame(getAudioIntensity);
+    }
+
+    getAudioIntensity();
+  })
+  .catch(function(error) {
+    console.error("Error accessing audio stream:", error);
+  });
+
 const FLOOR_HEIGHT = 100;
-const JUMP_FORCE = 700;
 const SPEED = 480;
 
-
 scene("game", () => {
-
-	setGravity(1000)
+	setGravity(1600)
 
 	const bean = add([
 		sprite("bean"),
@@ -50,16 +75,19 @@ scene("game", () => {
 
 	function jump() {
         if (bean.isGrounded()) {
+            const JUMP_FORCE = 400 + 10 * currentIntensity;  
             bean.jump(JUMP_FORCE);
         }
     }
 
-    onKeyPress("space", jump);
-    onClick(jump);
-	
+    onUpdate(() => {
+        if (currentIntensity > 30) { 
+            jump();
+        }
+    });
+
 	spawnTree();
 
-	
 	bean.onCollide("tree", () => {
 		shake();
 		go("lose", score);
@@ -77,7 +105,6 @@ scene("game", () => {
 	});
 
 });
-
 
 scene("lose", (score) => {
 
