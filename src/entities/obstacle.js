@@ -2,20 +2,27 @@ import { SPEED, OBSTACLE_INTERVAL } from "../config/constants";
 import { k } from "../main";
 
 export function spawnObstacles(groundY) {
-  k.loop(OBSTACLE_INTERVAL, () => {
-    const type = Math.random() < 0.5 ? "stone" : "mushroom";
+  const loopHandle = k.loop(OBSTACLE_INTERVAL, () => {
+    const temp = k.add([
+      k.sprite("cactus"),
+      k.scale(5),
+      k.opacity(0),
+      k.pos(-9999, -9999),
+    ]);
 
-    let colliderShape;
+    const cactusWidth = temp.width;
+    const cactusHeight = temp.height;
+    temp.destroy();
 
-    if (type === "stone") {
-      colliderShape = new k.Rect(k.vec2(15, 35), 20, 20);
-    } else {
-      colliderShape = new k.Rect(k.vec2(20, 25), 25, 28);
-    }
+    const colliderShape = new k.Rect(
+      k.vec2(8, 12),
+      cactusWidth - 16,
+      cactusHeight - 20
+    );
 
     const obs = k.add([
-      k.sprite(type),
-      k.scale(4),
+      k.sprite("cactus"),
+      k.scale(5),
       k.anchor("botleft"),
       k.pos(k.width() + 50, groundY),
       k.area({ shape: colliderShape }),
@@ -28,5 +35,9 @@ export function spawnObstacles(groundY) {
       obs.move(-SPEED, 0);
       if (obs.pos.x < -200) obs.destroy();
     });
+  });
+
+  k.onSceneLeave(() => {
+    loopHandle.cancel();
   });
 }

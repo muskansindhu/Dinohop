@@ -36,8 +36,7 @@ export function spawnDino(groundY) {
   });
 
   k.onUpdate(() => {
-    dino.pos.x = fixedX; // lock X
-    // dino.vel.x = 0;     // ❌ DO NOT SET THIS — breaks grounding physics
+    dino.pos.x = fixedX;
 
     if (!dino.isGrounded()) {
       dino.play("jump");
