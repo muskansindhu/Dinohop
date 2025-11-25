@@ -7,11 +7,11 @@ Dinohop is a browser-based endless runner game. Help the dinosaur avoid obstacle
 - Simple UI built with **JavaScript** and **HTML**
 - Responsive, fast gameplay
 
-## Demo Video
+## Demo
 
-[![Dinohop Gameplay Demo](https://github.com/muskansindhu/Dinohop/blob/main/thumbnail.png)](https://github.com/muskansindhu/Dinohop/blob/main/demo.mp4)
-
-> _Click the image above to watch a 30-second gameplay demo!_
+<div align="center">
+  <img src="https://github.com/muskansindhu/Dinohop/blob/main/demo.gif" width="500" />
+</div>
 
 ## Getting Started
 
